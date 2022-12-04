@@ -1,21 +1,15 @@
-# Framework-STM32F4x
-## Build project
-```bash
+# STM32_Framework_Template
 
-```
+## How to use this template ?
+## Build project
 ### Build embedded firmware (cross-compilation)
 ```bash
 mkdir build && cd build
-cmake .. -GNinja -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm-none-eabi.cmake -DSELECTED_BOARD=stm32f446re -DCMAKE_BUILD_TYPE=<Debug or Release>
+cmake .. -GNinja -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm-none-eabi.cmake -DSELECTED_BOARD=<Your board> -DCMAKE_BUILD_TYPE=<Debug or Release>
 cmake --build . --target all
 cmake --build . --target clean
 ```
-### Flash embedded firmware
-```
-cd ..
-openocd -f config/openocd.cfg -c "program bin/stm32f446re_Debug.elf verify reset exit"
-```
-## Build tests (native compilation)
+### Build tests (native compilation)
 ```bash
 mkdir build && cd build
 cmake .. -GNinja -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-native.cmake -DCMAKE_BUILD_TYPE=Test
@@ -26,18 +20,15 @@ ctest -N
 ctest -R <Test_Name>
 ctest -T Coverage
 ```
-
-## Build Test Suite
 ### Generate HTMP page for test coverage
 ```bash
 mkdir test-coverage && cd test-coverage
 geninfo ../build -b ../Tests -o ./coverage.info
 genhtml coverage.info -o generate-html
 ```
-
 ## Flash after building a firmware
 ```bash
-openocd -f config/openocd.cfg -c "setup" -c "program_release bin/stm32f446re_<Debug or Release>.elf"
+openocd -f config/openocd.cfg -c "setup" -c "program_release bin/<Your board>_<Debug or Release>.elf"
 ```
 ## Open a debug session
 Open a debug session with openocd :
@@ -46,5 +37,5 @@ openocd -f config/openocd.cfg -c "setup"
 ```
 And on another terminal, launch gdb with the debug binary :
 ``bash
-arm-none-eabi-gdb --tui --eval-command "target remote :3333" --eval-command "monitor reset halt" --eval-command "load" bin/stm32f446re_Debug.elf
+arm-none-eabi-gdb --tui --eval-command "target remote :3333" --eval-command "monitor reset halt" --eval-command "load" bin/<Your board>_Debug.elf
 ```
