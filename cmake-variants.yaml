@@ -1,0 +1,24 @@
+buildType:
+  default: debug
+  choices:
+    debug:
+      short: Debug
+      long: Emit debug information
+      buildType: Debug
+      settings:
+        CMAKE_TOOLCHAIN_FILE: cmake/toolchain-arm-none-eabi.cmake
+        SELECTED_BOARD: stm32f446re
+    release:
+      short: Release
+      long: Optimize generated code
+      buildType: Release
+      settings:
+        CMAKE_TOOLCHAIN_FILE: cmake/toolchain-arm-none-eabi.cmake
+        SELECTED_BOARD: stm32f446re
+    test:
+      short: Test
+      long: Test code
+      buildType: Test
+      settings:
+        CMAKE_TOOLCHAIN_FILE: cmake/toolchain-native.cmake
+        SELECTED_BOARD: stm32f446re

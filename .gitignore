@@ -1,0 +1,12 @@
+# Generated file
+bin
+build
+test-coverage
+
+# IDE file
+.vscode
+.cproject
+.project
+
+# HAL specific folder
+HAL/STM32F*
