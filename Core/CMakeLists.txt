@@ -14,6 +14,8 @@ target_include_directories(${BUILD_TARGET} PRIVATE
     ${CMAKE_SOURCE_DIR}/HAL/STM32_HAL_Driver/Inc/Legacy
     ${CMAKE_SOURCE_DIR}/CMSIS/include
     ${CMAKE_SOURCE_DIR}/CMSIS/Device/ST/STM32L1xx/Include
+    ${CMAKE_SOURCE_DIR}/OS
+    ${CMAKE_SOURCE_DIR}/OS/include
 )
 
 target_compile_definitions(${BUILD_TARGET} PRIVATE
@@ -24,7 +26,7 @@ target_compile_definitions(${BUILD_TARGET} PRIVATE
     $<$<CONFIG:Debug>:DEBUG>
 )
 
-target_link_libraries(${BUILD_TARGET} PRIVATE stm32_hal_driver)
+target_link_libraries(${BUILD_TARGET} PRIVATE stm32_hal_driver freertos_kernel)
 
 target_compile_options(${BUILD_TARGET} PRIVATE
     -mcpu=${CPU}

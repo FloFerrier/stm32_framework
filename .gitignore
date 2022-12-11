@@ -10,3 +10,6 @@ test-coverage
 
 # HAL specific folder
 HAL/STM32F*
+
+# OS specific folder
+OS/FreeRTOS
