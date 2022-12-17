@@ -9,7 +9,8 @@ test-coverage
 .project
 
 # HAL specific folder
-HAL/STM32F*
+HAL/STM32_HAL_Driver
+HAL/CMSIS/Device
 
 # OS specific folder
 OS/FreeRTOS
