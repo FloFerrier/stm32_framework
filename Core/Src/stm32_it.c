@@ -1,5 +1,5 @@
 #include "main.h"
-#include "stm32l1xx_it.h"
+#include "stm32_it.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
