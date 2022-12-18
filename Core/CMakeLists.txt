@@ -2,8 +2,7 @@ set(BUILD_TARGET "${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}" CACHE INTERNAL "")
 
 add_executable(${BUILD_TARGET}
     Src/main.c
-    Src/stm32l1xx_it.c
-    Src/system_stm32l1xx.c
+    Src/stm32_it.c
     Startup/startup_stm32l152xe.s
 )
 
@@ -13,7 +12,7 @@ target_include_directories(${BUILD_TARGET} PRIVATE
     ${CMAKE_SOURCE_DIR}/HAL/STM32_HAL_Driver/Inc
     ${CMAKE_SOURCE_DIR}/HAL/STM32_HAL_Driver/Inc/Legacy
     ${CMAKE_SOURCE_DIR}/CMSIS/include
-    ${CMAKE_SOURCE_DIR}/CMSIS/Device/ST/STM32L1xx/Include
+    ${CMAKE_SOURCE_DIR}/CMSIS/Device/Include
     ${CMAKE_SOURCE_DIR}/OS
     ${CMAKE_SOURCE_DIR}/OS/include
 )
