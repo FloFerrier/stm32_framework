@@ -3,6 +3,7 @@ set(BUILD_TARGET "${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}" CACHE INTERNAL "")
 add_executable(${BUILD_TARGET}
     Src/main.c
     Src/stm32_it.c
+    Src/led.c
 )
 
 target_include_directories(${BUILD_TARGET} PRIVATE
