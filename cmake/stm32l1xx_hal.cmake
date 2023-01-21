@@ -16,3 +16,11 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(STM32_HAL_Driver)
 FetchContent_MakeAvailable(STM32_CMSIS_Device)
+
+set(SPECIFIC_BOARD_HAL "STM32L152xE" CACHE INTERNAL "")
+set(STARTUP_FILE "startup_stm32l152xe.s" CACHE INTERNAL "")
+set( FREERTOS_HEAP "4" CACHE STRING "" FORCE)
+set( FREERTOS_PORT "GCC_ARM_CM3" CACHE STRING "" FORCE)
+set(CPU "cortex-m3")
+set(FLOAT_ABI "soft")
+set(LINKER_FILE ${CMAKE_SOURCE_DIR}/config/STM32L152RETx_FLASH.ld)

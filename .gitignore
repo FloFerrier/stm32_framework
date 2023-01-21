@@ -1,6 +1,7 @@
 # Generated file
 bin
-build
+build_target
+build_test
 test-coverage
 
 # IDE file

@@ -16,3 +16,12 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(STM32_HAL_Driver)
 FetchContent_MakeAvailable(STM32_CMSIS_Device)
+
+set(SPECIFIC_BOARD_HAL "STM32F446xx" CACHE INTERNAL "")
+set(STARTUP_FILE "startup_stm32f446retx.s" CACHE INTERNAL "")
+set( FREERTOS_HEAP "4" CACHE STRING "" FORCE)
+set( FREERTOS_PORT "GCC_ARM_CM4" CACHE STRING "" FORCE)
+set(CPU "cortex-m4")
+set(FPU "fpv4-sp-d16")
+set(FLOAT_ABI "hard")
+set(LINKER_FILE ${CMAKE_SOURCE_DIR}/config/STM32F446RETX_FLASH.ld)
