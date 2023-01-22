@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
+set(SELECTED_BOARD "stm32l152re" CACHE INTERNAL "")
+
 if(SELECTED_BOARD STREQUAL stm32f446re)
     include(cmake/stm32f4xx_hal.cmake)
 elseif(SELECTED_BOARD STREQUAL stm32l152re)

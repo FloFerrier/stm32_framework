@@ -7,7 +7,7 @@ This template is customizable and you can easily add your microcontroller.
 ### Build embedded firmware (cross-compilation)
 ```bash
 mkdir build_target && cd build_target
-cmake .. -GNinja -DSELECTED_BOARD=<Your board> -DCMAKE_BUILD_TYPE=<Debug or Release>
+cmake .. -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release>
 cmake --build . --target all
 cmake --build . --target clean
 ```
