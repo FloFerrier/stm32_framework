@@ -4,6 +4,7 @@ add_executable(${BUILD_TARGET}
     Src/main.c
     Src/stm32_it.c
     Src/led.c
+    Src/log.c
 )
 
 target_include_directories(${BUILD_TARGET} PRIVATE
