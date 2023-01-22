@@ -12,20 +12,40 @@ DMA_HandleTypeDef hdma_usart2_tx;
 void SystemClock_Config(void);
 void USER_UART_Init(void);
 
+void USER_LOG_Task(void *pvParams);
+
 int main(void)
 {
     HAL_Init();
 
     SystemClock_Config();
 
-    USER_UART_Init();
-
     BaseType_t result = 0;
-    result = xTaskCreate (USER_LED_Task, "Task_Led_Blink", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+    result = xTaskCreate (USER_LED_Task, "Task_Led_Blink", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
     if(pdPASS != result)
     {
         Error_Handler();
     }
+
+    result = xTaskCreate (USER_LOG_Task, "Task_Log_Uart", 384, NULL, tskIDLE_PRIORITY + 1, NULL);
+    if(pdPASS != result)
+    {
+        Error_Handler();
+    }
+
+    vTaskStartScheduler();
+
+    while (1)
+    {
+        // Nothing here
+    }
+}
+
+void USER_LOG_Task(void *pvParams)
+{
+  (void) pvParams;
+
+    USER_UART_Init();
 
     const char pData[] = "Hello world\r\n";
     size_t sizeData = strlen(pData);
@@ -34,11 +54,9 @@ int main(void)
         // Nothing
     }
 
-    vTaskStartScheduler();
-
-    while (1)
+    while(1)
     {
-        // Nothing here
+        vTaskDelay(1000/ portTICK_PERIOD_MS);
     }
 }
 
