@@ -1,14 +1,15 @@
 #include "log.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
+
+#define USER_LOG_LEN_MAX (255U)
 
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_tx;
 
-static void USER_UART_Init(void);
+QueueHandle_t queueUserLog;
 
 void DMA1_Channel7_IRQHandler(void)
 {
@@ -71,23 +72,38 @@ void USER_UART_Init(void)
     __HAL_RCC_DMA1_CLK_ENABLE();
     HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel7_IRQn);
+
+    queueUserLog = xQueueCreate(1, sizeof(char) * (USER_LOG_LEN_MAX+1));
+    if(NULL == queueUserLog)
+    {
+        Error_Handler();
+    }
 }
 
 void USER_LOG_Task(void *pvParams)
 {
     (void) pvParams;
 
-    USER_UART_Init();
-
-    const char pData[] = "Hello world\r\n";
-    size_t sizeData = strlen(pData);
-    if(HAL_OK != HAL_UART_Transmit(&huart2, (uint8_t*)pData, (uint16_t)sizeData, 1000))
-    {
-        // Nothing
-    }
+    char buffer[USER_LOG_LEN_MAX+1] = "";
+    size_t sizeBuffer = 0;
 
     while(1)
     {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        xQueueReceive(queueUserLog, (char*)buffer, portMAX_DELAY);
+        sizeBuffer = strlen(buffer);
+        if(HAL_OK != HAL_UART_Transmit(&huart2, (uint8_t*)buffer, (uint16_t)sizeBuffer, 1000))
+        {
+            // Nothing
+        }
     }
+}
+
+void USER_LOG_Send(const char *format, ...)
+{
+    va_list args;
+    va_start (args, format);
+    char buffer[USER_LOG_LEN_MAX+1] = "";
+    vsnprintf(buffer, USER_LOG_LEN_MAX, format, args);
+    va_end(args);
+    xQueueSend(queueUserLog, buffer, 100);
 }
