@@ -1,6 +1,5 @@
 #include "led.h"
-#include "FreeRTOS.h"
-#include "task.h"
+#include "log.h"
 
 static void USER_LED_Init(void);
 
@@ -33,6 +32,7 @@ void USER_LED_Task(void *pvParams)
 
     while(1)
     {
+        USER_LOG_Send("[LED] Blinking !\r\n");
         HAL_GPIO_TogglePin(USER_LED_PORT, USER_LED_PIN);
         vTaskDelay(1000/ portTICK_PERIOD_MS);
     }

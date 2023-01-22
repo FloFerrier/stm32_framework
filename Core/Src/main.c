@@ -1,6 +1,4 @@
 #include "main.h"
-#include "FreeRTOS.h"
-#include "task.h"
 
 #include "led.h"
 #include "log.h"
@@ -12,6 +10,8 @@ int main(void)
     HAL_Init();
 
     SystemClock_Config();
+
+    USER_UART_Init();
 
     BaseType_t result = 0;
     result = xTaskCreate (USER_LED_Task, "Task_Led_Blink", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
