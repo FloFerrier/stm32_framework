@@ -32,7 +32,7 @@ void USER_LED_Task(void *pvParams)
 
     while(1)
     {
-        USER_LOG_Send("[LED] Blinking !\r\n");
+        USER_LOG_Debug("Led blinking !");
         HAL_GPIO_TogglePin(USER_LED_PORT, USER_LED_PIN);
         vTaskDelay(1000/ portTICK_PERIOD_MS);
     }

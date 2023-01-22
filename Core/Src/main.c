@@ -13,6 +13,8 @@ int main(void)
 
     USER_UART_Init();
 
+    USER_LOG_SetLevel(LOG_DEBUG);
+
     BaseType_t result = 0;
     result = xTaskCreate (USER_LED_Task, "Task_Led_Blink", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
     if(pdPASS != result)

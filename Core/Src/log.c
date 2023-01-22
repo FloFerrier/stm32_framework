@@ -11,6 +11,8 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 QueueHandle_t queueUserLog;
 
+static log_level_e _level = LOG_INFO;
+
 void DMA1_Channel7_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(&hdma_usart2_tx);
@@ -98,12 +100,69 @@ void USER_LOG_Task(void *pvParams)
     }
 }
 
-void USER_LOG_Send(const char *format, ...)
+void USER_LOG_SetLevel(log_level_e level)
+{
+    switch (level)
+    {
+    case LOG_FATAL :
+    case LOG_ERROR :
+    case LOG_WARN :
+    case LOG_INFO :
+    case LOG_TRACE :
+    case LOG_DEBUG :
+        _level = level;
+        break;
+    default:
+        break;
+    }
+}
+
+log_level_e USER_LOG_GetLevel(void)
+{
+    return _level;
+}
+
+void USER_LOG_Send(log_level_e level, const char *file, int line, const char *fmt, ...)
 {
     va_list args;
-    va_start (args, format);
+    va_start (args, fmt);
     char buffer[USER_LOG_LEN_MAX+1] = "";
-    vsnprintf(buffer, USER_LOG_LEN_MAX, format, args);
+    char *ptr = buffer;
+
+    if(_level < level)
+    {
+        return;
+    }
+
+    switch (level)
+    {
+    case LOG_FATAL :
+        ptr += sprintf(ptr, "[FATAL] ");
+        break;
+    case LOG_ERROR :
+        ptr += sprintf(ptr, "[ERROR] ");
+        break;
+    case LOG_WARN :
+        ptr += sprintf(ptr, "[WARN] ");
+        break;
+    case LOG_INFO :
+        ptr += sprintf(ptr, "[INFO] ");
+        break;
+    case LOG_TRACE :
+        ptr += sprintf(ptr, "[TRACE] ");
+        break;
+    case LOG_DEBUG :
+        ptr += sprintf(ptr, "[DEBUG] ");
+    default:
+        break;
+    }
+
+    if(LOG_DEBUG == level)
+    {
+        ptr += sprintf(ptr, "(%s:%d) ", file, line);
+    }
+    ptr += vsprintf(ptr, fmt, args);
     va_end(args);
+    ptr += sprintf(ptr, "\r\n");
     xQueueSend(queueUserLog, buffer, 100);
 }
