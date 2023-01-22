@@ -98,3 +98,9 @@ void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackTy
     *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
     /* place for user code */
 }
+
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName )
+{
+    (void) xTask;
+    (void) pcTaskName;
+}
