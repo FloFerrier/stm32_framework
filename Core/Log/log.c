@@ -11,7 +11,10 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 QueueHandle_t queueUserLog;
 
-static log_level_e _level = LOG_INFO;
+void USART2_IRQHandler(void);
+void DMA1_Channel7_IRQHandler(void);
+
+void USER_LOG_SendData(const char *data, const uint32_t len);
 
 void DMA1_Channel7_IRQHandler(void)
 {
@@ -23,7 +26,7 @@ void USART2_IRQHandler(void)
     HAL_UART_IRQHandler(&huart2);
 }
 
-void USER_UART_Init(void)
+user_log_error_e USER_LOG_Init(void)
 {
     /* GPIO Initialization */
     __HAL_RCC_USART2_CLK_ENABLE();
@@ -52,9 +55,9 @@ void USER_UART_Init(void)
     huart2.Init.OverSampling = UART_OVERSAMPLING_16;
     if(HAL_OK != HAL_UART_Init(&huart2))
     {
-        Error_Handler();
+        return USER_LOG_ERROR_USART;
     }
-    HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(USART2_IRQn, 15, 0);
     HAL_NVIC_EnableIRQ(USART2_IRQn);
 
     /* DMA Initialization */
@@ -68,17 +71,40 @@ void USER_UART_Init(void)
     hdma_usart2_tx.Init.Priority = DMA_PRIORITY_LOW;
     if(HAL_OK != HAL_DMA_Init(&hdma_usart2_tx))
     {
-        Error_Handler();
+        return USER_LOG_ERROR_DMA;
    }
     __HAL_LINKDMA(&huart2, hdmatx, hdma_usart2_tx);
     __HAL_RCC_DMA1_CLK_ENABLE();
-    HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 15, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel7_IRQn);
 
+    /* FreeRTOS Queue Creation */
     queueUserLog = xQueueCreate(1, sizeof(char) * (USER_LOG_LEN_MAX+1));
     if(NULL == queueUserLog)
     {
-        Error_Handler();
+        return USER_LOG_ERROR_OS;
+    }
+
+    /* Log Driver Initialization */
+    log_interface_t log_interface = {
+        .send_data = USER_LOG_SendData,
+    };
+    LOG_Init(log_interface);
+    /* Must return USER_LOG_ERROR_DRIVER if fail */
+
+    return USER_LOG_SUCCESS;
+}
+
+void USER_LOG_SendData(const char *data, const uint32_t len)
+{
+    (void) len;
+    if((NULL != queueUserLog) && (NULL != data))
+    {
+        BaseType_t error = xQueueSend(queueUserLog, data, 100);
+        if(pdPASS != error)
+        {
+            // TODO : treat error here
+        }
     }
 }
 
@@ -98,71 +124,4 @@ void USER_LOG_Task(void *pvParams)
             // Nothing
         }
     }
-}
-
-void USER_LOG_SetLevel(log_level_e level)
-{
-    switch (level)
-    {
-    case LOG_FATAL :
-    case LOG_ERROR :
-    case LOG_WARN :
-    case LOG_INFO :
-    case LOG_TRACE :
-    case LOG_DEBUG :
-        _level = level;
-        break;
-    default:
-        break;
-    }
-}
-
-log_level_e USER_LOG_GetLevel(void)
-{
-    return _level;
-}
-
-void USER_LOG_Send(log_level_e level, const char *file, int line, const char *fmt, ...)
-{
-    va_list args;
-    va_start (args, fmt);
-    char buffer[USER_LOG_LEN_MAX+1] = "";
-    char *ptr = buffer;
-
-    if(_level < level)
-    {
-        return;
-    }
-
-    switch (level)
-    {
-    case LOG_FATAL :
-        ptr += sprintf(ptr, "[FATAL] ");
-        break;
-    case LOG_ERROR :
-        ptr += sprintf(ptr, "[ERROR] ");
-        break;
-    case LOG_WARN :
-        ptr += sprintf(ptr, "[WARN] ");
-        break;
-    case LOG_INFO :
-        ptr += sprintf(ptr, "[INFO] ");
-        break;
-    case LOG_TRACE :
-        ptr += sprintf(ptr, "[TRACE] ");
-        break;
-    case LOG_DEBUG :
-        ptr += sprintf(ptr, "[DEBUG] ");
-    default:
-        break;
-    }
-
-    if(LOG_DEBUG == level)
-    {
-        ptr += sprintf(ptr, "(%s:%d) ", file, line);
-    }
-    ptr += vsprintf(ptr, fmt, args);
-    va_end(args);
-    ptr += sprintf(ptr, "\r\n");
-    xQueueSend(queueUserLog, buffer, 100);
 }

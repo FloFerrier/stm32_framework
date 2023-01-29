@@ -11,18 +11,19 @@ int main(void)
 
     SystemClock_Config();
 
-    USER_UART_Init();
-
-    USER_LOG_SetLevel(LOG_DEBUG);
-
-    BaseType_t result = 0;
-    result = xTaskCreate (USER_LED_Task, "Task_Led_Blink", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
-    if(pdPASS != result)
+    user_log_error_e log_error = USER_LOG_Init();
+    if(USER_LOG_SUCCESS != log_error)
     {
         Error_Handler();
     }
 
-    result = xTaskCreate (USER_LOG_Task, "Task_Log_Uart", 384, NULL, tskIDLE_PRIORITY + 1, NULL);
+    BaseType_t result = 0;
+    result = xTaskCreate (USER_LED_Task, "Task_Led_Blink", 1024, NULL, tskIDLE_PRIORITY + 2, NULL);
+    if(pdPASS != result)
+    {
+        Error_Handler();
+    }
+    result = xTaskCreate (USER_LOG_Task, "Task_Log_Uart", 2048, NULL, tskIDLE_PRIORITY + 1, NULL);
     if(pdPASS != result)
     {
         Error_Handler();

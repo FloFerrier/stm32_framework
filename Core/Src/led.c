@@ -1,5 +1,6 @@
 #include "led.h"
 #include "log.h"
+#include "log.h"
 
 static void USER_LED_Init(void);
 
@@ -29,11 +30,12 @@ void USER_LED_Task(void *pvParams)
   (void) pvParams;
 
     USER_LED_Init();
+    static uint32_t counter = 0;
 
     while(1)
     {
-        USER_LOG_Debug("Led blinking !");
+        USER_LOG_Debug("Led blinking %d", ++counter);
         HAL_GPIO_TogglePin(USER_LED_PORT, USER_LED_PIN);
-        vTaskDelay(1000/ portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }

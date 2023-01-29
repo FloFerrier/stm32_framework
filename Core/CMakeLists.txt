@@ -4,11 +4,11 @@ add_executable(${BUILD_TARGET}
     Src/main.c
     Src/stm32_it.c
     Src/led.c
-    Src/log.c
+    Log/log.c
+    Log/Driver/log_driver.c
 )
 
 target_include_directories(${BUILD_TARGET} PRIVATE
-    Inc
     ${CMAKE_SOURCE_DIR}/HAL/Inc
     ${CMAKE_SOURCE_DIR}/HAL/STM32_HAL_Driver/Inc
     ${CMAKE_SOURCE_DIR}/HAL/STM32_HAL_Driver/Inc/Legacy
@@ -16,6 +16,9 @@ target_include_directories(${BUILD_TARGET} PRIVATE
     ${CMAKE_SOURCE_DIR}/CMSIS/Device/Include
     ${CMAKE_SOURCE_DIR}/OS
     ${CMAKE_SOURCE_DIR}/OS/include
+    Inc
+    Log
+    Log/Driver
 )
 
 target_compile_definitions(${BUILD_TARGET} PRIVATE
