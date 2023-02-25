@@ -28,10 +28,6 @@ mkdir test-coverage && cd test-coverage
 geninfo ../build -b ../Tests -o ./coverage.info
 genhtml coverage.info -o generate-html
 ```
-## Flash after building a firmware
-```bash
-openocd -f config/openocd.cfg -c "setup stm32l1" -c "program_release bin/<Your board>_<Debug or Release>.elf"
-```
 ## Open a debug session
 Open a debug session with openocd :
 ```bash

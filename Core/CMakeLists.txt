@@ -54,3 +54,9 @@ target_link_options(${BUILD_TARGET} PRIVATE
     -Wl,--print-memory-usage
     -Wl,--gc-sections
 )
+
+add_custom_target(flash
+    COMMAND openocd -f config/openocd.cfg -c "setup stm32l1" -c "program_release ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}.elf"
+    DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}.elf
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
