@@ -22,9 +22,9 @@ typedef void (*log_fcnt_t)(const char *data, const uint32_t len);
 
 typedef struct {
     log_fcnt_t send_data;
-} log_interface_t;
+} log_interface_s;
 
-void LOG_Init(log_interface_t interface);
+void LOG_Init(log_interface_s interface);
 
 void LOG_SetLevel(log_level_e level);
 log_level_e LOG_GetLevel(void);

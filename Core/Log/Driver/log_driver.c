@@ -11,10 +11,13 @@
 typedef struct {
     log_level_e level;
     bool color;
+    bool isInitialized;
     log_fcnt_t send_interface;
-} log_t;
+} log_instance_s;
 
-LOG_STATIC log_t _log;
+LOG_STATIC log_instance_s log_instance = {
+    .isInitialized = false,
+};
 
 const char *log_level_table[] =
 {
@@ -49,50 +52,42 @@ const char *ansi_color_table[] =
     [ANSI_COLOR_CYAN] = "\x1b[36m",
 };
 
-void LOG_Init(log_interface_t interface)
+void LOG_Init(log_interface_s interface)
 {
     if(NULL != interface.send_data)
     {
-        _log.send_interface = interface.send_data;
+        log_instance.color = true;
+        #ifndef DEBUG
+        log_instance.level = LOG_INFO;
+        #else
+        log_instance.level = LOG_DEBUG;
+        #endif
+        log_instance.send_interface = interface.send_data;
+        log_instance.isInitialized = true;
     }
-    _log.color = true;
-    #ifndef DEBUG
-    _log.level = LOG_INFO;
-    #else
-    _log.level = LOG_DEBUG;
-    #endif
 }
 
 void LOG_SetLevel(log_level_e level)
 {
-    switch (level)
+    if((LOG_FATAL <= level) && (LOG_DEBUG >= level))
     {
-    case LOG_FATAL :
-    case LOG_ERROR :
-    case LOG_WARN :
-    case LOG_INFO :
-    case LOG_TRACE :
-    case LOG_DEBUG :
-        _log.level = level;
-        break;
-    default:
-        break;
+        log_instance.level = level;
     }
 }
 
 log_level_e LOG_GetLevel(void)
 {
-    return _log.level;
+    return log_instance.level;
 }
 
 void LOG_DisableColor(void)
 {
-    _log.color = false;
+    log_instance.color = false;
 }
 
 void LOG_EnableColor(void)
 {
-    _log.color = true;
+    log_instance.color = true;
 }
 
 LOG_STATIC void LOG_GenerateIndex(log_level_e level, const char *file, int line, char *index, uint32_t *len)
@@ -100,7 +95,7 @@ LOG_STATIC void LOG_GenerateIndex(log_level_e level, const char *file, int line,
     if((NULL != file) && (NULL != index) && (NULL != len))
     {
         ansi_color_e color_level = ANSI_COLOR_NONE;
-        if(_log.color)
+        if(true == log_instance.color)
         {
             switch (level)
             {
@@ -143,7 +138,7 @@ LOG_STATIC void LOG_GenerateEndOfLine(char *endOfLine, uint32_t *len)
 {
     if((NULL != endOfLine) && (NULL != len))
     {
-        if(_log.color)
+        if(true == log_instance.color)
         {
             *len = snprintf(endOfLine, 10, "%s\r\n", ansi_color_table[ANSI_COLOR_RESET]);
         }
@@ -156,7 +151,7 @@ LOG_STATIC void LOG_GenerateEndOfLine(char *endOfLine, uint32_t *len)
 
 void LOG_Send(log_level_e level, const char *file, int line, const char *fmt, ...)
 {
-    if(_log.level >= level)
+    if((true == log_instance.isInitialized) && (log_instance.level >= level))
     {
         char index[LOG_LEN_MAX+1] = "";
         uint32_t index_len = 0;
@@ -173,9 +168,6 @@ void LOG_Send(log_level_e level, const char *file, int line, const char *fmt, ..
         char buffer[LOG_LEN_MAX+1] = "";
         uint32_t buffer_size = 0;
         buffer_size = snprintf(buffer, LOG_LEN_MAX, "%s%s%s", index, message, endOfLine);
-        if(NULL != _log.send_interface)
-        {
-            _log.send_interface(buffer, buffer_size);
-        }
+        log_instance.send_interface(buffer, buffer_size);
     }
 }

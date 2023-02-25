@@ -86,7 +86,7 @@ user_log_error_e USER_LOG_Init(void)
     }
 
     /* Log Driver Initialization */
-    log_interface_t log_interface = {
+    log_interface_s log_interface = {
         .send_data = USER_LOG_SendData,
     };
     LOG_Init(log_interface);
