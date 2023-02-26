@@ -3,23 +3,27 @@
 Firstly, get the list of supported microcontroller.
 If you don't find your microcontroller, don't worry !
 This template is customizable and you can easily add your microcontroller.
+## Prerequisites
+All packages are for Ubuntu distribution.
+```bash
+sudo apt install arm-none-eabi-gcc build_essential cmake gcc gdb-multiarch lcov ninja openocd
+```
 ## Build project
-### Build embedded firmware (cross-compilation)
+### Build and flash embedded firmware (cross-compilation)
 ```bash
 mkdir build_target && cd build_target
 cmake .. -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release>
-cmake --build . --target all
-cmake --build . --target clean
+ninja
+ninja flash
 ```
 ### Build tests (native compilation)
 ```bash
 mkdir build_test && cd build_test
 cmake .. -GNinja -DCMAKE_BUILD_TYPE=Test
-cmake --build . --target all
-cmake --build . --target clean
-ctest
+ninja
+ctest -V
 ctest -N
-ctest -R <Test_Name>
+ctest -V -R <Test_Name>
 ctest -T Coverage
 ```
 ### Generate HTMP page for test coverage
