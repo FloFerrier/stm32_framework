@@ -1,11 +1,10 @@
 #include "led.h"
-#include "log.h"
+
 #include "log.h"
 
 static void USER_LED_Init(void);
 
-void USER_LED_Init(void)
-{
+void USER_LED_Init(void) {
     /* GPIO Ports Clock Enable */
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOH_CLK_ENABLE();
@@ -25,15 +24,13 @@ void USER_LED_Init(void)
     HAL_GPIO_Init(USER_LED_PORT, &GPIO_InitStruct);
 }
 
-void USER_LED_Task(void *pvParams)
-{
-  (void) pvParams;
+void USER_LED_Task(void *pvParams) {
+    (void)pvParams;
 
     USER_LED_Init();
     static uint32_t counter = 0;
 
-    while(1)
-    {
+    while (1) {
         USER_LOG_Debug("Led blinking %d", ++counter);
         HAL_GPIO_TogglePin(USER_LED_PORT, USER_LED_PIN);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
