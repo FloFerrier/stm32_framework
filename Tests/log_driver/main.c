@@ -1,4 +1,4 @@
-#include <cmocka.h>
+// clang-format off
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <cmocka.h>
+// clang-format on
 
 #include "log_driver.h"
 
