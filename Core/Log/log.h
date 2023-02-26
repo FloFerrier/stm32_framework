@@ -1,8 +1,17 @@
 #ifndef CORE_LOG_H
 #define CORE_LOG_H
 
-#include "main.h"
+#ifndef UTEST
+#include "stm32l1xx_hal.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
 #include "log_driver.h"
+#else
+#include "mock_freertos.h"
+#include "mock_stm32l1xx.h"
+#include "mock_log_driver.h"
+#endif
 
 typedef enum {
     USER_LOG_SUCCESS = 0,
