@@ -12,7 +12,7 @@ sudo apt install arm-none-eabi-gcc build_essential cmake gcc gdb-multiarch lcov 
 ### Build and flash embedded firmware (cross-compilation)
 ```bash
 mkdir build_target && cd build_target
-cmake .. -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release>
+cmake .. -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release> -DSELECTED_BOARD=<Your_Board>
 ninja
 ninja flash
 ```
@@ -33,11 +33,14 @@ geninfo ../build -b ../Tests -o ./coverage.info
 genhtml coverage.info -o generate-html
 ```
 ## Open a debug session
-Open a debug session with openocd :
+## Debug
 ```bash
-openocd -f config/openocd.cfg -c "setup stm32l1"
+openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
 ```
-And on another terminal, launch gdb with the debug binary :
-``bash
-arm-none-eabi-gdb --tui --eval-command "target remote :3333" --eval-command "monitor reset halt" --eval-command "load" bin/<Your board>_Debug.elf
+```bash
+arm-none-eabi-gdb --tui
+(gdb) file bin/<firmware_name>.elf
+(gdb) target extended-remote localhost:3333
+(gdb) monitor reset halt
+(gdb) load bin/<firmware_name>.elf
 ```

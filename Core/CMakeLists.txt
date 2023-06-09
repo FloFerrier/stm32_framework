@@ -1,11 +1,9 @@
-set(BUILD_TARGET "${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}" CACHE INTERNAL "")
+set(BUILD_TARGET ${SELECTED_BOARD}_${CMAKE_BUILD_TYPE} CACHE STRING "")
 
 add_executable(${BUILD_TARGET}
-    Src/main.c
-    Src/stm32_it.c
-    Src/led.c
-    Log/log.c
-    Log/Driver/log_driver.c
+    src/main.c
+    src/syscalls.c
+    src/sysmem.c
 )
 
 target_include_directories(${BUILD_TARGET} PRIVATE
@@ -16,13 +14,9 @@ target_include_directories(${BUILD_TARGET} PRIVATE
     ${CMAKE_SOURCE_DIR}/CMSIS/Device/Include
     ${CMAKE_SOURCE_DIR}/OS
     ${CMAKE_SOURCE_DIR}/OS/include
-    Inc
-    Log
-    Log/Driver
 )
 
 target_compile_definitions(${BUILD_TARGET} PRIVATE
-    -DSTM32L152xE
     -DUSE_HAL_DRIVER
     -D${SELECTED_BOARD}
     PROJECT_ROOT="${CMAKE_SOURCE_DIR}/"
@@ -56,7 +50,7 @@ target_link_options(${BUILD_TARGET} PRIVATE
 )
 
 add_custom_target(flash
-    COMMAND openocd -f config/openocd.cfg -c "setup stm32l1" -c "program_release ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}.elf"
+    COMMAND openocd -f config/openocd.cfg -c "setup ${OPENOCD_TARGET_BOARD}" -c "program_release ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}.elf"
     DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}.elf
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
