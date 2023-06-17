@@ -14,6 +14,10 @@ target_include_directories(stm32_hal_driver PUBLIC
     CMSIS/Include
 )
 
+target_compile_definitions(stm32_hal_driver PRIVATE
+    -DUSE_HAL_DRIVER
+)
+
 target_compile_definitions(stm32_hal_driver PUBLIC
     -D${SPECIFIC_BOARD_HAL}
 )

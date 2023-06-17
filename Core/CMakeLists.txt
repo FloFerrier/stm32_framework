@@ -6,26 +6,17 @@ add_executable(${BUILD_TARGET}
     src/sysmem.c
 )
 
-target_include_directories(${BUILD_TARGET} PRIVATE
-    ${CMAKE_SOURCE_DIR}/HAL/Inc
-    ${CMAKE_SOURCE_DIR}/HAL/STM32_HAL_Driver/Inc
-    ${CMAKE_SOURCE_DIR}/HAL/STM32_HAL_Driver/Inc/Legacy
-    ${CMAKE_SOURCE_DIR}/CMSIS/include
-    ${CMAKE_SOURCE_DIR}/CMSIS/Device/Include
-    ${CMAKE_SOURCE_DIR}/OS
-    ${CMAKE_SOURCE_DIR}/OS/include
-)
-
 target_compile_definitions(${BUILD_TARGET} PRIVATE
-    -DUSE_HAL_DRIVER
-    -D${SELECTED_BOARD}
     PROJECT_ROOT="${CMAKE_SOURCE_DIR}/"
     $<$<CONFIG:Debug>:DEBUG>
 )
 
-target_link_libraries(${BUILD_TARGET} PRIVATE stm32_hal_driver freertos_kernel)
+target_link_libraries(${BUILD_TARGET} PRIVATE
+    stm32_hal_driver
+    freertos_kernel
+)
 
-target_compile_options(${BUILD_TARGET} PRIVATE
+target_compile_options(${BUILD_TARGET} PUBLIC
     -mcpu=${CPU}
     -mthumb
     -mfloat-abi=${FLOAT_ABI}
@@ -37,7 +28,7 @@ target_compile_options(${BUILD_TARGET} PRIVATE
     $<$<CONFIG:Release>:-O2>
 )
 
-target_link_options(${BUILD_TARGET} PRIVATE
+target_link_options(${BUILD_TARGET} PUBLIC
     -T${LINKER_FILE}
     -mcpu=${CPU}
     -mthumb

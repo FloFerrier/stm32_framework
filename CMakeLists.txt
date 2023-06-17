@@ -25,7 +25,7 @@ else()
 	message(FATAL_ERROR "Must to specify CMAKE_BUILD_TYPE as Debug, Release or Test")
 endif()
 
-project(Openpill)
+project(STM32_Framework)
 
 enable_language(C ASM)
 set(CMAKE_C_STANDARD 99)
