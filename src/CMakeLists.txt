@@ -1,9 +1,9 @@
 set(BUILD_TARGET ${SELECTED_BOARD}_${CMAKE_BUILD_TYPE} CACHE STRING "")
 
 add_executable(${BUILD_TARGET}
-    src/main.c
-    src/syscalls.c
-    src/sysmem.c
+    core/main.c
+    core/syscalls.c
+    core/sysmem.c
 )
 
 target_compile_definitions(${BUILD_TARGET} PRIVATE

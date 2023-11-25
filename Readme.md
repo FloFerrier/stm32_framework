@@ -6,20 +6,20 @@ This template is customizable and you can easily add your microcontroller.
 ## Prerequisites
 All packages are for Ubuntu distribution.
 ```bash
-sudo apt install arm-none-eabi-gcc build_essential cmake gcc gdb-multiarch lcov ninja openocd
+sudo apt install build-essential clang-format cmake gcc gcc-arm-none-eabi-gcc gdb-multiarch lcov ninja-build openocd
 ```
 ## Build project
 ### Build and flash embedded firmware (cross-compilation)
 ```bash
-mkdir build_target && cd build_target
-cmake .. -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release> -DSELECTED_BOARD=<Your_Board>
+cd build/Target
+cmake ../.. -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release> -DSELECTED_BOARD=<Your_Board>
 ninja
 ninja flash
 ```
 ### Build tests (native compilation)
 ```bash
-mkdir build_test && cd build_test
-cmake .. -GNinja -DCMAKE_BUILD_TYPE=Test
+cd build/Test
+cmake ../.. -GNinja -DCMAKE_BUILD_TYPE=Test
 ninja
 ctest -V
 ctest -N
