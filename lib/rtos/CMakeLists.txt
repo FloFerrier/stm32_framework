@@ -1,15 +1,17 @@
-set(FREERTOS_CONFIG_FILE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
+set(FREERTOS_CONFIG_FILE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+message("FREERTOS_CONFIG_FILE_DIRECTORY=${FREERTOS_CONFIG_FILE_DIRECTORY}")
 
 include(${CMAKE_SOURCE_DIR}/cmake/freertos.cmake)
 
 add_library(freertos_config INTERFACE)
 
 target_include_directories(freertos_config SYSTEM
-INTERFACE
+  INTERFACE
     include
 )
 
 target_compile_definitions(freertos_config
   INTERFACE
-    projCOVERAGE_TEST=0
+  projCOVERAGE_TEST=0
 )
