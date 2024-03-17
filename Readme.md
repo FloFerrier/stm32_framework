@@ -11,16 +11,14 @@ sudo apt install build-essential clang-format cmake gcc gcc-arm-none-eabi-gcc gd
 ## Build project
 ### Build and flash embedded firmware (cross-compilation)
 ```bash
-cd build/Target
-cmake ../.. -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release> -DSELECTED_BOARD=<Your_Board>
-ninja
-ninja flash
+cmake -B build/<Debug or Release> -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release> -DSELECTED_BOARD=<Your_Board>
+cmake --build build/<Debug or Release>
+cmake flash
 ```
 ### Build tests (native compilation)
 ```bash
-cd build/Test
-cmake ../.. -GNinja -DCMAKE_BUILD_TYPE=Test
-ninja
+cmake -B build/Test -GNinja -DCMAKE_BUILD_TYPE=Test
+cmake --build build/Test
 ctest -V
 ctest -N
 ctest -V -R <Test_Name>
