@@ -1,6 +1,6 @@
 # Generated file
-build/Target/*
-build/Test/*
+build/*
+bin/*
 
 # IDE file
 .vscode
