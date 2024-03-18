@@ -2,7 +2,6 @@ set(BUILD_TARGET ${SELECTED_BOARD}_${CMAKE_BUILD_TYPE})
 
 add_executable(${BUILD_TARGET}
     main.c
-    syscalls.c
     sysmem.c
 )
 
