@@ -6,7 +6,7 @@ This template is customizable and you can easily add your microcontroller.
 ## Prerequisites
 All packages are for Ubuntu distribution.
 ```bash
-$ sudo apt install build-essential clang-format cmake gcc gcc-arm-none-eabi gdb-multiarch lcov ninja-build openocd
+$ sudo apt install build-essential clang-format cmake gcc gcc-arm-none-eabi gdb-multiarch lcov ninja-build openocd qemu qemu-system-arm
 ```
 ## Build project
 ### Build and flash embedded firmware (cross-compilation)
@@ -25,12 +25,17 @@ $ cmake --build build/Test --target coverage # Generate code coverage report
 ```
 ## Open a debug session
 ## Debug
+With real hardware
 ```bash
 $ openocd -f config/openocd.cfg -c "setup <OPENOCD_TARGET_BOARD>" -c "program_debug"
+```
+Or with an emulator
+```bash
+$ qemu-system-arm -cpu cortex-m3 -machine stm32vldiscovery -gdb tcp::3333 -S -nographic -semihosting -kernel bin/<firmware_name>.elf
 ```
 ```bash
 $ arm-none-eabi-gdb --tui bin/<firmware_name>.elf
 (gdb) target extended-remote localhost:3333
 (gdb) load
-(gdb) monitor reset halt
+(gdb) monitor reset halt # With openocd only
 ```
