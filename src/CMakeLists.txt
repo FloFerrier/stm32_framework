@@ -6,9 +6,9 @@ add_executable(${BUILD_TARGET}
     sysmem.c
 )
 
-target_compile_definitions(${BUILD_TARGET} PRIVATE
-    PROJECT_ROOT="${CMAKE_SOURCE_DIR}/"
-    $<$<CONFIG:Debug>:DEBUG>
+target_compile_options(${BUILD_TARGET} PRIVATE
+    -Wall
+    -Wextra
 )
 
 target_link_libraries(${BUILD_TARGET} PRIVATE
@@ -16,28 +16,12 @@ target_link_libraries(${BUILD_TARGET} PRIVATE
     freertos_kernel
 )
 
-target_compile_options(${BUILD_TARGET} PUBLIC
-    -mcpu=${CPU}
-    -mthumb
-    -mfloat-abi=${FLOAT_ABI}
-    -fdata-sections
-    -ffunction-sections
-    -Wall
-    -Wextra
-    $<$<CONFIG:Debug>:-Og -g -gdwarf-2>
-    $<$<CONFIG:Release>:-O2>
-)
-
 target_link_options(${BUILD_TARGET} PUBLIC
     -T${LINKER_FILE}
-    -mcpu=${CPU}
-    -mthumb
-    -mfloat-abi=${FLOAT_ABI}
     -specs=nano.specs
     -specs=nosys.specs
     -Wl,-Map=output.map,--cref
     -Wl,--print-memory-usage
-    -Wl,--gc-sections
 )
 
 message("OPENOCD_TARGET_BOARD=${OPENOCD_TARGET_BOARD}")
