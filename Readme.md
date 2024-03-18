@@ -12,33 +12,25 @@ sudo apt install build-essential clang-format cmake gcc gcc-arm-none-eabi-gcc gd
 ### Build and flash embedded firmware (cross-compilation)
 ```bash
 cmake -B build/<Debug or Release> -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release> -DSELECTED_BOARD=<Your_Board>
-cmake --build build/<Debug or Release>
-cmake flash
+cmake --build build/<Debug or Release> # Build sources
+cmake --build build/<Debug or Release> --target flash # Flash the firmware
+cmake --build build/<Debug or Release> --target clean # Clean the build
 ```
 ### Build tests (native compilation)
 ```bash
 cmake -B build/Test -GNinja -DCMAKE_BUILD_TYPE=Test
 cmake --build build/Test
-ctest -V
-ctest -N
-ctest -V -R <Test_Name>
-ctest -T Coverage
-```
-### Generate HTMP page for test coverage
-```bash
-mkdir test-coverage && cd test-coverage
-geninfo ../build -b ../Tests -o ./coverage.info
-genhtml coverage.info -o generate-html
+ctest -V --test-dir build/Test # Run all tests with verbose output
+cmake --build build/Test --target coverage # Generate code coverage report
 ```
 ## Open a debug session
 ## Debug
 ```bash
-openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
+openocd -f config/openocd.cfg -c "setup <OPENOCD_TARGET_BOARD>" -c "program_debug"
 ```
 ```bash
-arm-none-eabi-gdb --tui
-(gdb) file bin/<firmware_name>.elf
+arm-none-eabi-gdb --tui bin/<firmware_name>.elf
 (gdb) target extended-remote localhost:3333
+(gdb) load
 (gdb) monitor reset halt
-(gdb) load bin/<firmware_name>.elf
 ```
