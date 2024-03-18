@@ -40,6 +40,8 @@ target_link_options(${BUILD_TARGET} PUBLIC
     -Wl,--gc-sections
 )
 
+message("OPENOCD_TARGET_BOARD=${OPENOCD_TARGET_BOARD}")
+
 add_custom_target(flash
     COMMAND openocd -f config/openocd.cfg -c "setup ${OPENOCD_TARGET_BOARD}" -c "program_release ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}.elf"
     DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SELECTED_BOARD}_${CMAKE_BUILD_TYPE}.elf
