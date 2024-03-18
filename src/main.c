@@ -1,17 +1,14 @@
 #include <stdint.h>
+#include <stdio.h>
 
-#define SIZE 20
-
-uint32_t tmp[SIZE] = {0};
+extern void initialise_monitor_handles(void);
 
 int main(void) {
-    static uint32_t index = 0;
+
+    initialise_monitor_handles();
+
     while (1) {
-        tmp[index] = index;
-        ++index;
-        if (index >= SIZE) {
-            index = 0;
-        }
+        printf("Hello World\r\n");
     }
     return 0;
 }
