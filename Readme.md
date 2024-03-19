@@ -1,17 +1,15 @@
 # STM32_Framework_Template
-## How to use this template ?
-Firstly, get the list of supported microcontroller.
-If you don't find your microcontroller, don't worry !
-This template is customizable and you can easily add your microcontroller.
+## Nucleo-f446re board
 ## Prerequisites
 All packages are for Ubuntu distribution.
 ```bash
-$ sudo apt install build-essential clang-format cmake gcc gcc-arm-none-eabi gdb-multiarch lcov ninja-build openocd qemu qemu-system-arm
+$ sudo apt install build-essential clang-format cmake gcc gcc-arm-none-eabi gdb-multiarch lcov ninja-build openocd
 ```
+Download Renode and install it.
 ## Build project
 ### Build and flash embedded firmware (cross-compilation)
 ```bash
-$ cmake -B build/<Debug or Release> -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release> -DSELECTED_BOARD=<Your_Board>
+$ cmake -B build/<Debug or Release> -GNinja -DCMAKE_BUILD_TYPE=<Debug or Release> -DSELECTED_BOARD=stm32f446retx
 $ cmake --build build/<Debug or Release> # Build sources
 $ cmake --build build/<Debug or Release> --target flash # Flash the firmware
 $ cmake --build build/<Debug or Release> --target clean # Clean the build
@@ -23,19 +21,37 @@ $ cmake --build build/Test
 $ ctest -V --test-dir build/Test # Run all tests with verbose output
 $ cmake --build build/Test --target coverage # Generate code coverage report
 ```
-## Open a debug session
-## Debug
-With real hardware
+## Open a debug session on board
+Start gdb server with Openocd :
 ```bash
-$ openocd -f config/openocd.cfg -c "setup <OPENOCD_TARGET_BOARD>" -c "program_debug"
+$ openocd -f config/openocd.cfg -c "setup stm32f4x" -c "program_debug"
 ```
-Or with an emulator
+Use gdb to debug your program :
 ```bash
-$ qemu-system-arm -cpu cortex-m3 -machine stm32vldiscovery -gdb tcp::3333 -S -nographic -semihosting -kernel bin/<firmware_name>.elf
-```
-```bash
-$ arm-none-eabi-gdb --tui bin/<firmware_name>.elf
+$ gdb-multiarch --tui bin/<firmware_name>.elf
 (gdb) target extended-remote localhost:3333
 (gdb) load
-(gdb) monitor reset halt # With openocd only
+(gdb) monitor reset halt
+(gdb) continue
+```
+## Use the Renode emulator
+You can use the emulator on standalone mode :
+```bash
+$ renode config/nucleo-f446re.resc
+(machine-0) logFile @/tmp/function-trace.log
+(machine-0) start
+(machine-0) pause
+(machine-0) sysbus.cpu PC
+(machine-0) sysbus.cpu LogFunctionNames true
+(machine-0) machine GetTimeSourceInfo
+(machine-0) machine EnableProfiler
+(machine-0) quit
+```
+Or with gdb :
+```bash
+$ gdb-multiarch --tui bin/<firmware_name>.elf
+(gdb) target extended-remote localhost:3333
+(gdb) monitor start # With renode only
+(gdb) monitor halt # With renode only
+(gdb) continue
 ```
