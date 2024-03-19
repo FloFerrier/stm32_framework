@@ -13,14 +13,12 @@ target_compile_options(${BUILD_TARGET} PRIVATE
 target_link_libraries(${BUILD_TARGET} PRIVATE
     stm32_hal_driver
     freertos_kernel
-    rdimon # Semihosting
 )
 
 target_link_options(${BUILD_TARGET} PUBLIC
     -T${LINKER_FILE}
     -specs=nano.specs
     -specs=nosys.specs
-    -specs=rdimon.specs
     -Wl,-Map=output.map,--cref
     -Wl,--print-memory-usage
 )

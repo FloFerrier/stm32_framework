@@ -4,8 +4,6 @@
 #include <task.h>
 #include <stm32f4xx_hal.h>
 
-extern void initialise_monitor_handles(void);
-
 void HAL_MspInit(void); // Use on HAL_Init() function
 
 void SysTick_Handler(void);
@@ -15,7 +13,6 @@ static void taskPrintf(void *params);
 
 int main(void) {
     HAL_Init();
-    initialise_monitor_handles();
 
     (void)xTaskCreate(taskPrintf, "check", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
@@ -50,7 +47,6 @@ static void taskPrintf(void *params) {
     (void)params;
 
     for( ;; ) {
-        printf("Hello World\r\n");
         vTaskDelay(delay_ms_to_ticks(500u));
     }
 }
