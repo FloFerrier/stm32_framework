@@ -3,6 +3,7 @@ set(BUILD_TARGET ${SELECTED_BOARD}_${CMAKE_BUILD_TYPE})
 add_executable(${BUILD_TARGET}
     main.c
     sysmem.c
+    console.c
 )
 
 target_compile_options(${BUILD_TARGET} PRIVATE

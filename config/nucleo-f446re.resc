@@ -3,7 +3,7 @@
 $CONFIG_FILE?=@config/nucleo-f446re.repl
 $FIRMWARE_FILE?=@bin/stm32f446retx_Debug.elf
 
-emulation CreateUartPtyTerminal "term" "/tmp/uart"
+emulation CreateUartPtyTerminal "console" "/tmp/console"
 
 mach create
 machine LoadPlatformDescription $CONFIG_FILE
@@ -14,5 +14,4 @@ logLevel 0
 machine StartGdbServer 3333
 pause
 
-#showAnalyzer sysbus.usart2
-connector Connect sysbus.usart2 term
+connector Connect sysbus.usart2 console
