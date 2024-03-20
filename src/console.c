@@ -5,7 +5,7 @@
 
 #define UART_BUFFER_LEN_MAX (255u)
 
-static char uartBuffer[UART_BUFFER_LEN_MAX+1] = "";
+static char uartBufferTx[UART_BUFFER_LEN_MAX+1] = "";
 static UART_HandleTypeDef uartHandle = {0};
 
 /* UART2
@@ -39,8 +39,14 @@ void console_init(void) {
 void console_send(const char* format, ...) {
     va_list va;
     va_start(va, format);
-    uint16_t uartBufferLen = 0;
-    uartBufferLen = (uint16_t)vsnprintf(uartBuffer, UART_BUFFER_LEN_MAX, format, va);
+    uint16_t uartBufferTxLen = 0;
+    uartBufferTxLen = (uint16_t)vsnprintf(uartBufferTx, UART_BUFFER_LEN_MAX, format, va);
     va_end(va);
-    (void)HAL_UART_Transmit(&uartHandle, (uint8_t*)uartBuffer, uartBufferLen, (uint32_t)1000u);
+    (void)HAL_UART_Transmit(&uartHandle, (uint8_t*)uartBufferTx, uartBufferTxLen, (uint32_t)1000u);
+}
+
+bool console_receive(char *character) {
+    HAL_StatusTypeDef halStatus = HAL_OK;
+    halStatus = HAL_UART_Receive(&uartHandle, (uint8_t*)character,(uint16_t)1u, (uint16_t)10u);
+    return ((halStatus == HAL_OK) ? true : false);
 }
