@@ -3,7 +3,6 @@ bin
 build
 
 # IDE file
-.vscode
 .cproject
 .project
 
