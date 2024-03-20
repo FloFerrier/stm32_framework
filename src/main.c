@@ -10,15 +10,13 @@ void HAL_MspInit(void); // Use on HAL_Init() function
 
 void SysTick_Handler(void);
 
-static inline TickType_t delay_ms_to_ticks(uint32_t delay);
-static void taskPrintf(void *params);
+static void task_shell(void *params);
 
 int main(void) {
     HAL_Init();
 
     console_init();
-
-    (void)xTaskCreate(taskPrintf, "check", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+    (void)xTaskCreate(task_shell, "shell", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
     vTaskStartScheduler();
 
@@ -43,15 +41,30 @@ void SysTick_Handler(void) {
 #endif /* INCLUDE_xTaskGetSchedulerState */
 }
 
-static inline TickType_t delay_ms_to_ticks(uint32_t delay) {
-    return (delay / (uint32_t)portTICK_PERIOD_MS);
-}
-
-static void taskPrintf(void *params) {
+static void task_shell(void *params) {
     (void)params;
 
+    char character = 0;
+    bool isSuccess = true;
+
     for( ;; ) {
-        console_send("Hello world\r\n");
-        vTaskDelay(delay_ms_to_ticks(500u));
+        isSuccess = console_receive(&character);
+        if(isSuccess == true) {
+            if(character >= 0x20  && character <= 0x7E) {
+                console_send("%c", character);
+            }
+            else {
+                switch (character)
+                {
+                case 0x0D: // CR: '\r'
+                case 0x0A: // LF: '\n
+                    console_send("\r\n");
+                    break;
+                default:
+                    console_send(" 0%x ", character);
+                    break;
+                }
+            }
+        }
     }
 }
