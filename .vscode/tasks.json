@@ -3,29 +3,50 @@
     "tasks":
     [
         {
-            "label": "Configure Workspace",
+            "label": "Configure Workspace for cross-compilation",
             "type": "shell",
-            "command": "cmake -GNinja -B build/${input:buildType} -DCMAKE_BUILD_TYPE=${input:buildType} -DSELECTED_BOARD=${input:boardSelection}",
+            "command": "cmake -GNinja -B build/${input:buildFolder} -DCMAKE_BUILD_TYPE=${input:buildType} -DSELECTED_BOARD=${input:boardSelection}",
+        },
+        {
+            "label": "Configure Workspace for testing on native",
+            "type": "shell",
+            "command": "cmake -GNinja -B build/${input:buildFolder} -DCMAKE_BUILD_TYPE=Test",
         },
         {
             "label": "Build Workspace",
             "type": "shell",
-            "command": "cmake --build build/${input:buildType}"
+            "command": "cmake --build build/${input:buildFolder}"
         },
         {
             "label": "Clean Workspace",
             "type": "shell",
-            "command": "cmake --build build/${input:buildType} -t clean"
+            "command": "cmake --build build/${input:buildFolder} -t clean"
+        },
+        {
+            "label": "Clean All",
+            "type": "shell",
+            "command": "rm -rf build/* bin/*"
         },
         {
             "label": "Run Testsuite",
             "type": "shell",
-            "command": "ctest -V --test-dir build/Test"
+            "group": "test",
+            "command": "ctest -V --test-dir build/${input:buildFolder}",
+            "dependsOrder": "sequence",
+            "dependsOn": ["Configure Workspace for testing on native", "Build Workspace"],
         },
         {
             "label": "Start Emulator",
             "type": "shell",
             "command": "renode config/nucleo-f446re.resc"
+        },
+        {
+            "label": "Build Firmware from scratch",
+            "type": "shell",
+            "group": "build",
+            "command": "",
+            "dependsOrder": "sequence",
+            "dependsOn": ["Configure Workspace for cross-compilation", "Build Workspace"],
         },
     ],
     "inputs": [
@@ -36,9 +57,14 @@
             "options": [
                 "Debug",
                 "Release",
-                "Test",
             ],
             "default": "Debug"
+        },
+        {
+            "id": "buildFolder",
+            "type": "promptString",
+            "description": "What build folder do you want ?",
+            "default": "tmp"
         },
         {
             "id": "boardSelection",
