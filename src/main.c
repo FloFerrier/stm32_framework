@@ -13,7 +13,7 @@ void SysTick_Handler(void);
 int main(void) {
     HAL_Init();
 
-    (void)xTaskCreate(task_shell, "shell", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+    (void)xTaskCreate(shell_task, "shell", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
     vTaskStartScheduler();
 

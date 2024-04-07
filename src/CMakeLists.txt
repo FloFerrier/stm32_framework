@@ -4,6 +4,7 @@ add_executable(${BUILD_TARGET}
     main.c
     sysmem.c
     console.c
+    shell.c
 )
 
 target_compile_options(${BUILD_TARGET} PRIVATE
