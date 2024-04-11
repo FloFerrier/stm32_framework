@@ -10,8 +10,12 @@ machine LoadPlatformDescription $CONFIG_FILE
 
 sysbus LoadELF $FIRMWARE_FILE
 
+connector Connect sysbus.usart2 console
+
+#showAnalyzer sysbus.usart2
+
 logLevel 0
 machine StartGdbServer 3333
-pause
 
-connector Connect sysbus.usart2 console
+#pause
+start

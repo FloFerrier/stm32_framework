@@ -21,7 +21,7 @@ STATIC bool shell_cmdExecute(const char *cmd, uint32_t cmd_len);
 STATIC bool shell_cmdExecute(const char *cmd, uint32_t cmd_len) {
     (void) cmd;
     (void) cmd_len;
-    print_message("> Unknown command\r\n");
+    console_send("> Unknown command\r\n");
     return false;
 }
 
