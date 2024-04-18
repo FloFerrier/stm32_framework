@@ -31,8 +31,8 @@ void console_send(const char* format, ...) {
     va_end(va);
     char *expected_string = mock_ptr_type(char *);
     int expected_len = strlen(expected_string);
-    assert_int_equal(buffer_len, expected_len);
     assert_string_equal(buffer_string, expected_string);
+    assert_int_equal(buffer_len, expected_len);
     free(buffer_string);
 }
 

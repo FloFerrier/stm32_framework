@@ -16,13 +16,36 @@ int loopCnt;
 
 STATIC shell_s shell = {0};
 
-STATIC bool shell_cmdExecute(const char *cmd, uint32_t cmd_len);
+typedef struct {
+  const char *name;
+  void (*handler)(uint32_t argc, char *argv[]);
+  const char *desc;
+} shell_command_s;
 
-STATIC bool shell_cmdExecute(const char *cmd, uint32_t cmd_len) {
-    (void) cmd;
-    (void) cmd_len;
-    console_send("> Unknown command\r\n");
+STATIC bool shell_cmd_isFound(char *cmd, uint32_t cmd_size);
+STATIC void shell_cmd_dataGet(uint32_t argc, char *argv[]);
+
+STATIC const shell_command_s shell_commands[] = {
+  {"data_get", shell_cmd_dataGet, "Display data measurements"},
+};
+
+STATIC bool shell_cmd_isFound(char *cmd, uint32_t cmd_size) {
+    print_message("[%d] \"%s\"\r\n", cmd_size, cmd);
+    (void)cmd_size;
+    for(uint32_t i=0; i < sizeof(shell_commands)/sizeof(shell_commands[0]); i++) {
+        uint32_t cmp = strncmp(cmd, shell_commands[i].name, 255);
+        if(cmp == 0) {
+            return true;
+        }
+    }
+
     return false;
+}
+
+STATIC void shell_cmd_dataGet(uint32_t argc, char *argv[]) {
+    (void)argc;
+    (void)argv;
+    console_send("> SUCCESS\r\n");
 }
 
 void shell_task(void *params) {
@@ -43,17 +66,23 @@ void shell_task(void *params) {
             if(isprint(character) != 0) {
                 shell.buffer[shell.index++] = character;
             }
-            else if (character == '\r' || character == '\n'){
+            else if(character == '\r' || character == '\n'){
                 cmdIsAvailable = true;
                 shell.buffer[shell.index] = '\0';
                 command_len = (uint32_t)strnlen(shell.buffer, COMMAND_STRING_LEN_MAX);
-                (void)strncpy(command_string, shell.buffer, command_len);
+                (void)strncpy(command_string, shell.buffer, command_len + 1);
                 shell.index = 0u;
             }
         }
         if(cmdIsAvailable == true) {
-            (void)shell_cmdExecute(command_string, command_len);
             cmdIsAvailable = false;
+            bool cmdIsFound = shell_cmd_isFound(command_string, command_len);
+            if(cmdIsFound == true) {
+                shell_commands[0].handler(0, NULL);
+            }
+            else {
+                console_send("> Unknown command\r\n");
+            }
         }
     } while(FOREVER());
 }

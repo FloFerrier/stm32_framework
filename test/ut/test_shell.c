@@ -60,7 +60,7 @@ static void test_receive_one_character(void **state) {
     shell_task(&params);
 }
 
-static void test_receive_command(void **state) {
+static void test_receive_command_unknown(void **state) {
     test_fixture_s *fixture = (test_fixture_s *)*state;
     uint32_t params;
     mock_assert_call_console_init();
@@ -76,11 +76,28 @@ static void test_receive_command(void **state) {
     shell_task(&params);
 }
 
+static void test_receive_command_dataGet(void **state) {
+    test_fixture_s *fixture = (test_fixture_s *)*state;
+    uint32_t params;
+    mock_assert_call_console_init();
+    const char TEST_DATA[] = "data_get\n";
+    *fixture->loopCnt = strlen(TEST_DATA) - 1;
+
+    for(int index=0; index < (int)(strlen(TEST_DATA)); index++) {
+        mock_assert_call_console_receive(TEST_DATA[index], true);
+    }
+
+    mock_assert_call_console_send("> SUCCESS\r\n");
+
+    shell_task(&params);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test_setup_teardown(test_fail_to_receive_character, setup, teardown),
         cmocka_unit_test_setup_teardown(test_receive_one_character, setup, teardown),
-        cmocka_unit_test_setup_teardown(test_receive_command, setup, teardown),
+        cmocka_unit_test_setup_teardown(test_receive_command_unknown, setup, teardown),
+        cmocka_unit_test_setup_teardown(test_receive_command_dataGet, setup, teardown),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
