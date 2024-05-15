@@ -30,7 +30,6 @@ STATIC const shell_command_s shell_commands[] = {
 };
 
 STATIC bool shell_cmd_isFound(char *cmd, uint32_t cmd_size) {
-    print_message("[%d] \"%s\"\r\n", cmd_size, cmd);
     (void)cmd_size;
     for(uint32_t i=0; i < sizeof(shell_commands)/sizeof(shell_commands[0]); i++) {
         uint32_t cmp = strncmp(cmd, shell_commands[i].name, 255);
