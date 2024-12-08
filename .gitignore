@@ -1,11 +1,5 @@
 # Generated file
 build/*
-bin/*
-
-# IDE file
-.vscode
-.cproject
-.project
 
 # lib specific folder
 lib/hal/stm32
