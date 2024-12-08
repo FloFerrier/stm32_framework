@@ -16,8 +16,11 @@ target_include_directories(stm32_hal_driver PUBLIC
 
 target_compile_definitions(stm32_hal_driver PRIVATE
     -DUSE_HAL_DRIVER
+    -D${SPECIFIC_BOARD_HAL}
 )
 
-target_compile_definitions(stm32_hal_driver PUBLIC
-    -D${SPECIFIC_BOARD_HAL}
+target_compile_options(stm32_hal_driver PRIVATE
+    -mcpu=${CPU}
+    -mfpu=${FPU}
+    -mfloat-abi=${FLOAT_ABI}
 )

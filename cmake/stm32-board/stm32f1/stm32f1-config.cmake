@@ -1,9 +1,10 @@
 include(FetchContent)
 
 set(CPU cortex-m3 CACHE STRING "")
+set(FPU None CACHE STRING "")
+set(FLOAT_ABI soft CACHE STRING "")
 set(FREERTOS_HEAP 4 CACHE STRING "")
 set(FREERTOS_PORT GCC_ARM_CM3 CACHE STRING "")
-set(FLOAT_ABI soft CACHE STRING "")
 set(OPENOCD_TARGET_BOARD stm32f1x CACHE STRING "")
 
 FetchContent_Declare(
